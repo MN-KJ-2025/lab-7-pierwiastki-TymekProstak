@@ -25,7 +25,14 @@ def roots_20(coef: np.ndarray) -> tuple[np.ndarray, np.ndarray] | None:
             - Wektor miejsc zerowych (m,).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    if not isinstance(coef, np.ndarray) or coef.ndim != 1 or coef.size == 0:
+        return None
+    else:
+        coef = coef.astype(float)
+        noise = (10**(-10))*np.random.random(len(coef))
+        perturbed_coef = coef + noise
+        roots = nppoly.polyroots(perturbed_coef)
+        return perturbed_coef, roots
 
 
 def frob_a(coef: np.ndarray) -> np.ndarray | None:
@@ -48,7 +55,16 @@ def frob_a(coef: np.ndarray) -> np.ndarray | None:
         (np.ndarray): Macierz Frobeniusa o rozmiarze (n,n).
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    if not isinstance(coef, np.ndarray) or coef.ndim != 1 or coef.size == 0 or  coef.size == 1:
+        return None
+    an = coef[-1]
+    n = coef.size -1 
+    F = np.zeros((n, n))
+    for i in range(n - 1):
+        F[i, i + 1] = 1.0
+    for j in range(n):
+        F[n - 1, j] = -coef[j] / an
+    return F
 
 
 def is_nonsingular(A: np.ndarray) -> bool | None:
@@ -63,4 +79,9 @@ def is_nonsingular(A: np.ndarray) -> bool | None:
             wypadku `False`.
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    if not isinstance(A, np.ndarray) or len(A.shape) != 2 or A.shape[0] != A.shape[1]:
+        return None
+    if np.linalg.det(A) == 0:
+        return False
+    else:
+        return True
